@@ -182,11 +182,11 @@
         var db;
         var global_key = '';
         var global_date = '';
-        const note_btn = document.getElementById("note_btn");
-        const list_btn = document.getElementById("list_btn");
-        const back_btn = document.getElementById("back");
-        const backSv_btn = document.getElementById("backSv");
-        const back2 = document.querySelector(".back2")
+        const note_btn = $("#note_btn");
+        const list_btn = $("#list_btn");
+        const back_btn = $("#back");
+        const backSv_btn = $("#backSv");
+        const back2 = $(".back2")
         
         var request = window.indexedDB.open("notebookDatabase", 1);
         request.onerror = function(event) {
