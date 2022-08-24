@@ -204,41 +204,41 @@
         
         
         
-        note_btn.addEventListener("click",handleNewNote);
-        list_btn.addEventListener("click",handleListOfNotes);
-        back_btn.addEventListener("click",handleBackBtn);
-        backSv_btn.addEventListener("click",handleBackBtn)
+        note_btn.click(handleNewNote);
+        list_btn.click(handleListOfNotes);
+        back_btn.click(handleBackBtn);
+        backSv_btn.click(handleBackBtn);
         
 
         function handleNewNote(){
-            document.getElementById("new_note").style.display = "block";
+            $("#new_note").style.display = "block";
             note_btn.style.display = "none";
             list_btn.style.display = "none";
         }
         function handleListOfNotes(){
             retrieve();
-            document.getElementById("list_of_notes").style.display = "block";
+            $("#list_of_notes").style.display = "block";
             note_btn.style.display = "none";
             list_btn.style.display = "none";
         }
         function handleBackBtn(){
-            document.getElementById("list_of_notes").style.display = "none";
-            document.getElementById("new_note").style.display = "none";
-            document.getElementById('save_button').innerText="Save";
-            document.querySelector('input[name="title"]').value = '';
-            document.querySelector('textarea[name="body"]').value='';
+            $("#list_of_notes").style.display = "none";
+            $("#new_note").style.display = "none";
+            $('#save_button').innerText="Save";
+            $('input[name="title"]').value = '';
+            $('textarea[name="body"]').value='';
             note_btn.style.display = "block";
             list_btn.style.display = "block";
 
         }
 
         update = function(){
-            document.getElementById('list_of_notes').style.display = 'block';
-            document.getElementById('new_note').style.display = 'none';
-            var title = document.querySelector('input[name="title"]').value;
-            var body = document.querySelector('textarea[name="body"]').value;
-            document.querySelector('input[name="title"]').value = '';
-            document.querySelector('textarea[name="body"]').value='';
+            $('#list_of_notes').style.display = 'block';
+            $('#new_note').style.display = 'none';
+            var title = $('input[name="title"]').value;
+            var body = $('textarea[name="body"]').value;
+            $('input[name="title"]').value = '';
+            $('textarea[name="body"]').value='';
 
             
             var objectstore = db.transaction("notes","readwrite").objectStore("notes");
@@ -250,8 +250,8 @@
                 data.title = title;
                 data.body = body;
                 objectstore.put(data,global_key).onsuccess = event=>{
-                document.getElementById('save_button').onclick=save;
-                document.getElementById('save_button').innerText="Save";
+                $('#save_button').onclick=save;
+                $('#save_button').innerText="Save";
                 retrieve();
                 }
 
@@ -259,25 +259,25 @@
 
         retrieverow  = function(key) 
         {
-            document.getElementById('list_of_notes').style.display = 'none';
-            document.getElementById('new_note').style.display = 'block';
+            $('#list_of_notes').style.display = 'none';
+            $('#new_note').style.display = 'block';
             var transaction = db.transaction("notes","readwrite");
             var objectStore = transaction.objectStore("notes");
             var request = objectStore.get(key);
             request.onsuccess = function(event){
-                document.querySelector('input[name="title"]').value = request.result.title;
-                document.querySelector('textarea[name="body"]').value= request.result.body;
-                document.getElementById('save_button').innerText="Update";
+                $('input[name="title"]').value = request.result.title;
+                $('textarea[name="body"]').value= request.result.body;
+                $('#save_button').innerText="Update";
 
             global_key = key;
             global_date = new Date().toLocaleString();
-            document.getElementById('save_button').onclick=update;
+            $('#save_button').onclick=update;
             }
             
         }
 
         retrieve = function() {
-            var table = document.getElementById('mytable');
+            var table = $('#mytable');
     
             var s = `<table><tr><th>Title</th><th>Date</th></tr>`, row=null;
             var objectStore = db.transaction("notes","readwrite").objectStore("notes");
@@ -304,7 +304,7 @@
             request.onsuccess = event =>{
                 retrieve();
                     
-            document.getElementById("list_of_notes").style.display = "block";
+            $("#list_of_notes").style.display = "block";
             
             
             
@@ -314,15 +314,15 @@
 
             note_btn.style.display = "block";
             list_btn.style.display = "block";
-            document.getElementById("new_note").style.display = "none";
+            $("#new_note").style.display = "none";
             var transaction = db.transaction("notes","readwrite");
             var objectStore = transaction.objectStore("notes");
             
     
-            var title = document.querySelector('input[name="title"]').value;
-            var body = document.querySelector('textarea[name="body"]').value;
-            document.querySelector('input[name="title"]').value = '';
-            document.querySelector('textarea[name="body"]').value='';
+            var title = $('input[name="title"]').value;
+            var body = $('textarea[name="body"]').value;
+            $('input[name="title"]').value = '';
+            $('textarea[name="body"]').value='';
 
             var date = new Date().toLocaleString();
     
