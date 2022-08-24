@@ -204,10 +204,10 @@
         
         
         
-        note_btn.click(handleNewNote);
-        list_btn.click(handleListOfNotes);
-        back_btn.click(handleBackBtn);
-        backSv_btn.click(handleBackBtn);
+        note_btn.on("click",handleNewNote);
+        list_btn.on("click",handleListOfNotes);
+        back_btn.on("click",handleBackBtn);
+        backSv_btn.on("click",handleBackBtn);
         
 
         function handleNewNote(){
