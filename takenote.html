@@ -211,34 +211,34 @@
         
 
         function handleNewNote(){
-            $("#new_note").style.display = "block";
-            note_btn.style.display = "none";
-            list_btn.style.display = "none";
+            $("#new_note").css("display","block");
+            note_btn.css("display","none");
+            list_btn.css("display","none");
         }
         function handleListOfNotes(){
             retrieve();
-            $("#list_of_notes").style.display = "block";
-            note_btn.style.display = "none";
-            list_btn.style.display = "none";
+            $("#list_of_notes").css("display","block");
+            note_btn.css("display","none");
+            list_btn.css("display","none");
         }
         function handleBackBtn(){
-            $("#list_of_notes").style.display = "none";
-            $("#new_note").style.display = "none";
-            $('#save_button').innerText="Save";
-            $('input[name="title"]').value = '';
-            $('textarea[name="body"]').value='';
-            note_btn.style.display = "block";
-            list_btn.style.display = "block";
+            $("#list_of_notes").css("display","none");
+            $("#new_note").css("display","none");
+            $('#save_button').text("Save");
+            $('input[name="title"]').val("");
+            $('textarea[name="body"]').val("");
+            note_btn.css("display","block");
+            list_btn.css("display","block");
 
         }
 
         update = function(){
-            $('#list_of_notes').style.display = 'block';
-            $('#new_note').style.display = 'none';
-            var title = $('input[name="title"]').value;
-            var body = $('textarea[name="body"]').value;
-            $('input[name="title"]').value = '';
-            $('textarea[name="body"]').value='';
+            $('#list_of_notes').css("display","block");
+            $('#new_note').css("display","none");
+            var title = $('input[name="title"]').val();
+            var body = $('textarea[name="body"]').val();
+            $('input[name="title"]').val("");
+            $('textarea[name="body"]').val("");
 
             
             var objectstore = db.transaction("notes","readwrite").objectStore("notes");
@@ -250,8 +250,8 @@
                 data.title = title;
                 data.body = body;
                 objectstore.put(data,global_key).onsuccess = event=>{
-                $('#save_button').onclick=save;
-                $('#save_button').innerText="Save";
+                $('#save_button').on("click",save);
+                $('#save_button').text("Save");
                 retrieve();
                 }
 
@@ -259,19 +259,19 @@
 
         retrieverow  = function(key) 
         {
-            $('#list_of_notes').style.display = 'none';
-            $('#new_note').style.display = 'block';
+            $('#list_of_notes').css("display","none");
+            $('#new_note').css("display","block");
             var transaction = db.transaction("notes","readwrite");
             var objectStore = transaction.objectStore("notes");
             var request = objectStore.get(key);
             request.onsuccess = function(event){
-                $('input[name="title"]').value = request.result.title;
-                $('textarea[name="body"]').value= request.result.body;
-                $('#save_button').innerText="Update";
+                $('input[name="title"]').val(request.result.title);
+                $('textarea[name="body"]').val(request.result.body);
+                $('#save_button').text("Update");
 
             global_key = key;
             global_date = new Date().toLocaleString();
-            $('#save_button').onclick=update;
+            $('#save_button').on("click",update);
             }
             
         }
@@ -292,7 +292,7 @@
                 s = s + row;
                 cursor.continue(); }
             
-                table.innerHTML=s + "</table>";
+                table.html(s + "</table>");
             }
             
         };
@@ -304,7 +304,7 @@
             request.onsuccess = event =>{
                 retrieve();
                     
-            $("#list_of_notes").style.display = "block";
+            $("#list_of_notes").css("display","block");
             
             
             
@@ -312,17 +312,17 @@
         }}
         save = function() {
 
-            note_btn.style.display = "block";
-            list_btn.style.display = "block";
-            $("#new_note").style.display = "none";
+            note_btn.css("display","block");
+            list_btn.css("display","block");
+            $("#new_note").css("display","none");
             var transaction = db.transaction("notes","readwrite");
             var objectStore = transaction.objectStore("notes");
             
     
-            var title = $('input[name="title"]').value;
-            var body = $('textarea[name="body"]').value;
-            $('input[name="title"]').value = '';
-            $('textarea[name="body"]').value='';
+            var title = $('input[name="title"]').val();
+            var body = $('textarea[name="body"]').val();
+            $('input[name="title"]').val("");
+            $('textarea[name="body"]').val("");
 
             var date = new Date().toLocaleString();
     
