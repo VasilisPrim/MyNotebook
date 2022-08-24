@@ -250,7 +250,7 @@
                 data.title = title;
                 data.body = body;
                 objectstore.put(data,global_key).onsuccess = event=>{
-                $('#save_button').on("click",save);
+                    document.getElementById("save_button").onclick = save;
                 $('#save_button').text("Save");
                 retrieve();
                 }
