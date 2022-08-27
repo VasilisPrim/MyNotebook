@@ -252,7 +252,7 @@
 
         update1 = function(){
         	
-        	window.alert("HEY!!!")
+        	
             $('#list_of_notes').css("display","block");
             $('#new_note').css("display","none");
             var title = $('input[name="title"]').val();
@@ -326,7 +326,7 @@
             		   
             		   row = `<tr ><td>${item.title}</td><td>${item.date}</td><td><button  class="update_btn"  onclick="retrieverow(${item.id})">Update/View</button> <button class="delete_btn" onclick = "deleteObj(${item.id})">Delete</button></td></tr> `; 
             		   s = s + row;
-            		   //console.log(s);
+            		   
             	   });
             	   
             	   table.html(s + "</table>");
