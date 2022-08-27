@@ -34,24 +34,13 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 	
 	
 	JsonObject data = new Gson().fromJson(request.getReader().readLine(), JsonObject.class);
-	System.out.println("patates");
 	
-	
-	
-	
-	
-	
-	
-	    int id =   data.get("id").getAsInt();
+		int id =   data.get("id").getAsInt();
 		
 		String title = data.get("title").getAsString();
 		String body = data.get("body").getAsString();
 		String date = data.get("date").getAsString();
 		String update = data.get("update").getAsString();
-		
-		
-		
-		
 		
 		String sql1 = "INSERT INTO `notes`.`my_notes` (`id`, `title`, `body`, `date`) VALUES ("+"'"+id+"'"+", "+"'"+title+"'"+", "+"'"+body+"'"+", "+"'"+date+"'"+")";
 		String sql2 = "UPDATE `notes`.`my_notes` SET `title` ="+"'"+title+ "', `body` ="+"'"+body+"', `date` =" +"'"+date+"' WHERE `id` ='"+id+"';";
@@ -90,9 +79,6 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			e.printStackTrace();
 		}
 		
-		
-		
-		
 }
 
 protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -108,27 +94,17 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 	
 	try {
 		
-		
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		Connection conn = DriverManager.getConnection(url,username,password);
 		Statement st = conn.createStatement();
-		
-		
 		
 		if(request.getParameter("request").equals("delete")) {
 			
 			String sql3 = "DELETE FROM `notes`.`my_notes` WHERE (`id` = '"+request.getParameter("id_row")+"');";
 			
 			int rs = st.executeUpdate(sql3);
-			
-			
-			
-			
 		}
 		else if(!request.getParameter("request").equals("hi")) {
-			
-			
-			
 			String sql2 = "SELECT * FROM `notes`.`my_notes` WHERE `id`="+"'"+request.getParameter("id_row")+"';";
 			
 			ResultSet rs = st.executeQuery(sql2);
@@ -140,8 +116,6 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 			
 			
 			String rowJson2 = new Gson().toJson(oneRow);
-			
-			System.out.println(rowJson2);
 			
 			response.setContentType("application/json");
 		    response.setCharacterEncoding("UTF-8");
@@ -166,19 +140,10 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 		}
 		
 		String json = new Gson().toJson(jsonList);
-		
-		System.out.println(json);
-		
 		response.setContentType("application/json");
 	    response.setCharacterEncoding("UTF-8");
 	    response.getWriter().write(json);
-		
-		
-		
-	    rs.close();
-		
-		
-		
+		rs.close();
 		}
 		
 		st.close();
@@ -196,10 +161,6 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response) t
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	
-	
-	
 }
-	
-
 }
 }
