@@ -1,3 +1,5 @@
+<%@ page import="javax.servlet.http.HttpServlet" %>
+
 <!DOCTYPE html>
 
 <html>
@@ -86,6 +88,16 @@
         font-size: large;
         letter-spacing: 1px;
     }
+    
+    #update_btn{
+        margin: 10px;
+        border: none;
+        padding: 1rem;
+        border-radius: 5px;
+        background-color: rgb(13, 223, 13);
+        font-size: large;
+        letter-spacing: 1px;
+    }
     .update_btn,.delete_btn{
         margin:2px;
         border: none;
@@ -151,6 +163,7 @@
         <textarea name="body" rows="5" cols="30"></textarea>
         <br>
         <button id="save_button" onclick="save()">Save</button>
+        <button id="update_btn" onclick="update1()">Update</button>
         <button id = "backSv">Back</button>
         
     </div>
@@ -169,24 +182,26 @@
 
     <script type="text/javascript">
         
-        window.indexedDB = window.indexedDB || window.mozIndexedDB ||
-        window.webkitIndexedDB || window.msIndexedDB;
         
-        window.IDBTransaction = window.IDBTransaction ||
-        window.webkitIDBTransaction || window.msIDBTransaction;
-        window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange ||
-        window.msIDBKeyRange
-        if (!window.indexedDB) {
-	        window.alert("Your browser doesn't support a stable version of IndexedDB.")
-        }
+        
+        
+        var global_key = 0;
+        
+        if (localStorage.length === 0) {
+        	   localStorage.setItem("global_key",global_key)
+        	}
         var db;
-        var global_key = '';
+        
+        var update = ' ';
         var global_date = '';
         const note_btn = $("#note_btn");
         const list_btn = $("#list_btn");
         const back_btn = $("#back");
         const backSv_btn = $("#backSv");
-        const back2 = $(".back2")
+        const back2 = $(".back2");
+        const save_btn = $("#save_button");
+        const update_btn = $("#update_btn");
+        
         
         var request = window.indexedDB.open("notebookDatabase", 1);
         request.onerror = function(event) {
@@ -209,8 +224,11 @@
         back_btn.on("click",handleBackBtn);
         backSv_btn.on("click",handleBackBtn);
         
+        
 
         function handleNewNote(){
+        	$("#save_button").show();
+        	$("#update_btn").hide();
             $("#new_note").css("display","block");
             note_btn.css("display","none");
             list_btn.css("display","none");
@@ -224,7 +242,7 @@
         function handleBackBtn(){
             $("#list_of_notes").css("display","none");
             $("#new_note").css("display","none");
-            $('#save_button').text("Save");
+            
             $('input[name="title"]').val("");
             $('textarea[name="body"]').val("");
             note_btn.css("display","block");
@@ -232,91 +250,124 @@
 
         }
 
-        update = function(){
+        update1 = function(){
+        	
+        	window.alert("HEY!!!")
             $('#list_of_notes').css("display","block");
             $('#new_note').css("display","none");
             var title = $('input[name="title"]').val();
             var body = $('textarea[name="body"]').val();
             $('input[name="title"]').val("");
             $('textarea[name="body"]').val("");
-
             
-            var objectstore = db.transaction("notes","readwrite").objectStore("notes");
+            var msg = {'id':global_key,'title':title,'body':body,'date':new Date().toLocaleString("en-US"),'update':"yes"};
             
-            var request = objectstore.get(global_key);
-            request.onsuccess =event =>{
-                var data = request.result;
-                data.date = global_date;
-                data.title = title;
-                data.body = body;
-                objectstore.put(data,global_key).onsuccess = event=>{
-                    document.getElementById("save_button").onclick = save;
-                $('#save_button').text("Save");
-                retrieve();
+            $.ajax({
+         	   type: "POST",
+         	   url: "NoteHandle",
+                contentType: "application/json", 
+                data: JSON.stringify(msg),
+                success: function(response) {
+                	retrieve();
                 }
+             
+          });
 
-            }}
+     }
 
         retrieverow  = function(key) 
         {
+        	
             $('#list_of_notes').css("display","none");
             $('#new_note').css("display","block");
-            var transaction = db.transaction("notes","readwrite");
-            var objectStore = transaction.objectStore("notes");
-            var request = objectStore.get(key);
-            request.onsuccess = function(event){
-                $('input[name="title"]').val(request.result.title);
-                $('textarea[name="body"]').val(request.result.body);
-                $('#save_button').text("Update");
-
-            global_key = key;
-            global_date = new Date().toLocaleString();
-            document.getElementById("save_button").onclick = update;
-            }
+            
+            $("#update_btn").show();
+     	   $("#save_button").hide();
+            
+            
+            
+            $.ajax({
+          	   type: "GET",
+          	   url: "NoteHandle",
+               contentType: "application/json", 
+               data: {'request':"yes",'id_row':key},
+               success: function(response) {
+            	   
+            	   
+            	   $('input[name="title"]').val(response.title);
+            	   $('textarea[name="body"]').val(response.body);
+            	   
+            	   
+            	   global_key = key;
+                   global_date = new Date().toLocaleString();
+                   
+                   
+                }
+               
+                 
+            });
+            
             
         }
 
         retrieve = function() {
-            var table = $('#mytable');
-    
-            var s = `<table><tr><th>Title</th><th>Date</th></tr>`, row=null;
-            var objectStore = db.transaction("notes","readwrite").objectStore("notes");
-            
-            objectStore.openCursor().onsuccess = function(event) {
-            var cursor = event.target.result;
-            
+        	
+        	var table = $('#mytable');
+        	var s = `<table><tr><th>Title</th><th>Date</th></tr>`, row=null;
+        	
+        	$.ajax({
+         	   type: "GET",
+         	   url: "NoteHandle",
+               contentType: "application/json", 
+               data:{'request':"hi"},
                
-            if (cursor) {
+               success: function(response) {
+            	   $.each(response, function(index, item) {
+            		   
+            		   row = `<tr ><td>${item.title}</td><td>${item.date}</td><td><button  class="update_btn"  onclick="retrieverow(${item.id})">Update/View</button> <button class="delete_btn" onclick = "deleteObj(${item.id})">Delete</button></td></tr> `; 
+            		   s = s + row;
+            		   //console.log(s);
+            	   });
+            	   
+            	   table.html(s + "</table>");
+               }
                 
-                row = `<tr ><td>${cursor.value.title}</td><td>${cursor.value.date}</td><td><button  class="update_btn"  onclick="retrieverow(${cursor.key})">Update/View</button> <button class="delete_btn" onclick = "deleteObj(${cursor.key})">Delete</button></td></tr> `;
-                s = s + row;
-                cursor.continue(); }
+             
+          });
+        	
+           }
             
-                table.html(s + "</table>");
-            }
-            
-        };
+        
         
         
         deleteObj = function(key){
-            var objStore = db.transaction("notes", "readwrite").objectStore("notes");
-            var request = objStore.delete(key);
-            request.onsuccess = event =>{
-                retrieve();
+        	
+        	$.ajax({
+           	   type: "GET",
+           	   url: "NoteHandle",
+                contentType: "application/json", 
+                data: {'request':"delete",'id_row':key},
+                success: function(response) {
+                
+             	   retrieve();
                     
-            $("#list_of_notes").css("display","block");
+                    $("#list_of_notes").css("display","block");
+                    
+             	   }
+                
+                  
+             });
             
-            
-            
-
-        }}
+        }
         save = function() {
-
-            note_btn.css("display","block");
+        	
+        	global_key = parseInt(localStorage.getItem("global_key"));
+        	localStorage.setItem("global_key",global_key + 1);
+        	update = "no";
+			note_btn.css("display","block");
             list_btn.css("display","block");
             $("#new_note").css("display","none");
-            var transaction = db.transaction("notes","readwrite");
-            var objectStore = transaction.objectStore("notes");
+            
             
     
             var title = $('input[name="title"]').val();
@@ -324,13 +375,28 @@
             $('input[name="title"]').val("");
             $('textarea[name="body"]').val("");
 
-            var date = new Date().toLocaleString();
+            var date = new Date().toLocaleString("en-US");
     
-            var msg = {"title":title,"body":body,"date":date};
-    
+            var msg = {'id':global_key,'title':title,'body':body,'date':date,'update':update};
             
-            var request = objectStore.add(msg);
-            retrieve()
+            
+            
+            msg = JSON.stringify(msg);
+            
+            
+            $.ajax({
+            	   type: "POST",
+            	   url: "NoteHandle",
+                   contentType: "application/json", 
+                   data: msg,
+                   success: function(response) {
+                       window.alert("OK!");
+                   }
+                
+             });
+            
+            
+            retrieve();
         }
     
         
